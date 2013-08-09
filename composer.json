@@ -1,0 +1,22 @@
+{
+    "name": "scalia/sphinxsearch-laravel",
+    "description": "Laravel package to query Sphinxsearch",
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "Scalia",
+            "email": "contacto@scalia.es"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0",
+        "illuminate/support": "4.0.x",
+	"gigablah/sphinxphp": "dev-master"
+    },
+    "autoload": {
+        "psr-0": {
+            "Scalia\\SphinxSearch": "src/"
+        }
+    },
+    "minimum-stability": "dev"
+}
