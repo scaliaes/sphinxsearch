@@ -1,6 +1,8 @@
 {
-    "name": "scalia/sphinxsearch-laravel",
+    "name": "scalia/sphinxsearch",
     "description": "Laravel package to query Sphinxsearch",
+    "keywords": ["sphinx", "sphinxsearch", "laravel", "laravel 4"],
+    "homepage": "http://github.com/scalia/sphinxsearch",
     "license": "Apache-2.0",
     "authors": [
         {
