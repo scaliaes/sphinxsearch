@@ -57,7 +57,7 @@ class SphinxSearch {
     }
     else
     {
-      $val = [(int) $values];
+      $val = array((int) $values);
     }
     $this->_connection->setFilter($attribute, $val, $exclude);
 
