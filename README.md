@@ -66,3 +66,18 @@ Query another Sphinx index with limit and filters.
 		->filter('attribute', array(1, 2))
 		->range('int_attribute', 1, 10)
 		->get();
+
+
+Query with match and sort type specified.
+
+	$result = SphinxSearch::search('my query', 'index_name')
+		->setFieldWeights(
+			array(
+				'partno'  => 10,
+				'name'    => 8,
+				'details' => 1
+			)
+		)
+		->setMatchMode(\Sphinx\SphinxClient::SPH_MATCH_EXTENDED)
+		->setSortMode(\Sphinx\SphinxClient::SPH_SORT_EXTENDED, "@weight DESC")
+		->get(true);  //passing true causes get() to respect returned sort order
