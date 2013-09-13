@@ -13,6 +13,8 @@ class SphinxSearch {
     $port = \Config::get('sphinxsearch::port');
     $this->_connection = new \Sphinx\SphinxClient();
     $this->_connection->setServer($host, $port);
+    $this->_connection->setMatchMode(\Sphinx\SphinxClient::SPH_MATCH_ANY);
+    $this->_connection->setSortMode(\Sphinx\SphinxClient::SPH_SORT_RELEVANCE);
     $this->_config = \Config::get('sphinxsearch::indexes');
     reset($this->_config);
     $this->_index_name = key($this->_config);
@@ -26,10 +28,20 @@ class SphinxSearch {
       $this->_index_name = $index_name;
     }
 
-    $this->_connection->setMatchMode(\Sphinx\SphinxClient::SPH_MATCH_ANY);
-    $this->_connection->setSortMode(\Sphinx\SphinxClient::SPH_SORT_RELEVANCE);
     $this->_connection->resetFilters();
 
+    return $this;
+  }
+
+  function setFieldWeights($weights)
+  {
+    $this->_connection->setFieldWeights($weights);
+    return $this;
+  }
+
+  function setMatchMode($mode)
+  {
+    $this->_connection->setMatchMode($mode);
     return $this;
   }
 
@@ -70,11 +82,11 @@ class SphinxSearch {
     return $this;
   }
 
-  function get()
+  function get($respect_sort_order = FALSE)
   {
     $this->_total_count = 0;
     $result             = $this->_connection->query($this->_search_string, $this->_index_name);
-
+    
     // Process results.
     if ($result)
     {
@@ -84,12 +96,20 @@ class SphinxSearch {
       if($result['total'] > 0 && isset($result['matches']))
       {
         // Get results' id's and query the database.
-        $result = array_keys($result['matches']);
+        $matchids = array_keys($result['matches']);
 
         $config = $this->_config[$this->_index_name];
         if ($config)
         {
-          $result = \DB::table($config['table'])->whereIn($config['column'], $result)->get();
+          if(isset($config['modelname']))
+          {
+            $result = call_user_func_array($config['modelname'] . "::whereIn", array($config['column'], $matchids))->get();  
+          }
+          else
+          {
+            $result = \DB::table($config['table'])->whereIn($config['column'], $matchids)->get();
+          }
+          
         }
       }
       else
@@ -98,7 +118,21 @@ class SphinxSearch {
       }
     }
 
-    return $result;
+    if($respect_sort_order)
+    {
+      if(isset($matchids))
+      {
+        $return_val = array();
+        foreach($matchids as $matchid)
+        {
+          $key = self::getResultKeyByID($matchid, $result);
+          $return_val[] = $result[$key];
+        }
+        return $return_val;  
+      }
+    }
+
+    return $result;    
   }
 
   function getTotalCount()
@@ -109,5 +143,21 @@ class SphinxSearch {
   function getErrorMessage()
   {
     return $this->_connection->getLastError();
+  }
+
+  private function getResultKeyByID($id, $result)
+  {
+    if(count($result) > 0)
+    {
+      foreach($result as $k => $result_item)
+      {
+
+        if ( $result_item->id == $id )
+        {
+          return $k;
+        }
+      }
+    }
+    return false;
   }
 }
