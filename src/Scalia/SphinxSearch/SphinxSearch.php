@@ -6,6 +6,7 @@ class SphinxSearch {
   private $_search_string;
   private $_config;
   private $_total_count;
+  private $_time;
 
   function __construct()
   {
@@ -92,6 +93,8 @@ class SphinxSearch {
     {
       // Get total count of existing results.
       $this->_total_count = (int) $result['total_found'];
+      // Get time taken for search.
+      $this->_time = $result['time'];
 
       if($result['total'] > 0 && isset($result['matches']))
       {
@@ -138,6 +141,10 @@ class SphinxSearch {
   function getTotalCount()
   {
     return $this->_total_count;
+  }
+  function getTime()
+  {
+    return $this->_time;
   }
 
   function getErrorMessage()
