@@ -46,6 +46,12 @@ class SphinxSearch {
     return $this;
   }
 
+  function setRankingMode($mode)
+  {
+    $this->_connection->setRankingMode($mode);
+    return $this;
+  }
+
   function setSortMode($mode, $par = NULL)
   {
     $this->_connection->setSortMode($mode, $par);
