@@ -91,7 +91,7 @@ Route::get('/search', function ()
     $search = Input::get('q', 'search string');    
     $perPage = 15;  //number of results per page
     // use a cache so you dont have to keep querying sphinx for every page!
-    $results = Cache::remember(Str::slug($search), 1, function () use($search)
+    $results = Cache::remember(Str::slug($search), 10, function () use($search)
     {
         return SphinxSearch::search($search)
         ->setMatchMode(\Sphinx\SphinxClient::SPH_MATCH_EXTENDED2)        
@@ -110,3 +110,27 @@ And, in your view after you finish displaying rows,
 ```php
 <?php echo $data->links()?>
 ```
+
+## Searching through multiple Sphinx indexes (main/delta)
+
+It is a common strategy to utilize the main+delta scheme (www.sphinxconsultant.com/sphinx-search-delta-indexing/). When using deltas, it is often necessary to query on multiple indexes simultaneously. In order to achieve this using SphinxSearch, modify your config file to include the "name" and "mapping" keys like so:
+
+```php
+<?php
+
+return array (
+	'host'    => '127.0.0.1',
+	'port'    => 9312,    
+	'indexes' => array (
+	    'name'    => array ('main', 'delta'),
+	    'mapping' => array ( 'table' => 'properties', 'column' => 'id' ),	    
+	)
+);
+```
+
+You can also pass in multiple indexes (separated by comma or space) to your search like so (the "mapping" key must be specified in the config):
+
+```php
+SphinxSearch::search('lorem', 'main, delta')->get();
+```
+

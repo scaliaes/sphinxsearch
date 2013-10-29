@@ -18,7 +18,7 @@ class SphinxSearch {
     $this->_connection->setSortMode(\Sphinx\SphinxClient::SPH_SORT_RELEVANCE);
     $this->_config = \Config::get('sphinxsearch::indexes');
     reset($this->_config);
-    $this->_index_name = key($this->_config);
+    $this->_index_name = isset($this->_config['name'])?implode(',', $this->_config['name']):key($this->_config);
   }
 
   function search($string, $index_name = NULL)
@@ -26,6 +26,15 @@ class SphinxSearch {
     $this->_search_string = $string;
     if (NULL !== $index_name)
     {
+       //if index name contains , or ' ', multiple index search
+      if (strpos($index_name, ' ')||strpos($index_name,','))
+      {
+          if (!isset($this->_config['mapping']))
+          {
+              throw new \Exception('For multiple index search, keys 
+                  "name" and "mapping" are required in config file');
+          } 
+      }
       $this->_index_name = $index_name;
     }
 
@@ -107,8 +116,8 @@ class SphinxSearch {
         // Get results' id's and query the database.
         $matchids = array_keys($result['matches']);
 
-        $config = $this->_config[$this->_index_name];
-        if ($config)
+        $config = isset($this->_config['mapping'])?$this->_config['mapping']:$this->_config[$this->_index_name];
+	if ($config)
         {
           if(isset($config['modelname']))
           {
