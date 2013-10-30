@@ -128,7 +128,7 @@ return array (
 );
 ```
 
-You can also pass in multiple indexes (separated by comma or space) to your search like so (the "mapping" key must be specified in the config):
+You can also pass in multiple indexes (separated by comma or space) to your search like so (if the "mapping" key is not specified in the config, search retrieves ids):
 
 ```php
 SphinxSearch::search('lorem', 'main, delta')->get();

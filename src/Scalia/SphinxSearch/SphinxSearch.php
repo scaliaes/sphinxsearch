@@ -31,8 +31,7 @@ class SphinxSearch {
       {
           if (!isset($this->_config['mapping']))
           {
-              throw new \Exception('For multiple index search, keys 
-                  "name" and "mapping" are required in config file');
+	      $this->_config['mapping']=false;
           } 
       }
       $this->_index_name = $index_name;
