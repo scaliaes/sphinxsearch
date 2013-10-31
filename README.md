@@ -81,3 +81,56 @@ Query with match and sort type specified.
 		->setMatchMode(\Sphinx\SphinxClient::SPH_MATCH_EXTENDED)
 		->setSortMode(\Sphinx\SphinxClient::SPH_SORT_EXTENDED, "@weight DESC")
 		->get(true);  //passing true causes get() to respect returned sort order
+
+## Paging results in Laravel 4 (with caching)
+
+```php
+Route::get('/search', function ()
+{
+    $page = Input::get('page', 1);
+    $search = Input::get('q', 'search string');    
+    $perPage = 15;  //number of results per page
+    // use a cache so you dont have to keep querying sphinx for every page!
+    $results = Cache::remember(Str::slug($search), 10, function () use($search)
+    {
+        return SphinxSearch::search($search)
+        ->setMatchMode(\Sphinx\SphinxClient::SPH_MATCH_EXTENDED2)        
+        ->get();
+    });
+    if ($results) {
+        $pages = array_chunk($results, $perPage);
+        
+        $paginator = Paginator::make($pages[$page - 1], count($results), $perPage);
+        return View::make('searchpage')->with('data', $paginator);
+    }
+    return View::make('notfound');
+});
+```
+And, in your view after you finish displaying rows,
+```php
+<?php echo $data->links()?>
+```
+
+## Searching through multiple Sphinx indexes (main/delta)
+
+It is a common strategy to utilize the main+delta scheme (www.sphinxconsultant.com/sphinx-search-delta-indexing/). When using deltas, it is often necessary to query on multiple indexes simultaneously. In order to achieve this using SphinxSearch, modify your config file to include the "name" and "mapping" keys like so:
+
+```php
+<?php
+
+return array (
+	'host'    => '127.0.0.1',
+	'port'    => 9312,    
+	'indexes' => array (
+	    'name'    => array ('main', 'delta'),
+	    'mapping' => array ( 'table' => 'properties', 'column' => 'id' ),	    
+	)
+);
+```
+
+You can also pass in multiple indexes (separated by comma or space) to your search like so (if the "mapping" key is not specified in the config, search retrieves ids):
+
+```php
+SphinxSearch::search('lorem', 'main, delta')->get();
+```
+

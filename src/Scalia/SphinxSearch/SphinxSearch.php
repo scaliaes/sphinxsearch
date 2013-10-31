@@ -6,6 +6,7 @@ class SphinxSearch {
   private $_search_string;
   private $_config;
   private $_total_count;
+  private $_time;
 
   function __construct()
   {
@@ -17,7 +18,7 @@ class SphinxSearch {
     $this->_connection->setSortMode(\Sphinx\SphinxClient::SPH_SORT_RELEVANCE);
     $this->_config = \Config::get('sphinxsearch::indexes');
     reset($this->_config);
-    $this->_index_name = key($this->_config);
+    $this->_index_name = isset($this->_config['name'])?implode(',', $this->_config['name']):key($this->_config);
   }
 
   function search($string, $index_name = NULL)
@@ -25,6 +26,14 @@ class SphinxSearch {
     $this->_search_string = $string;
     if (NULL !== $index_name)
     {
+       //if index name contains , or ' ', multiple index search
+      if (strpos($index_name, ' ')||strpos($index_name,','))
+      {
+          if (!isset($this->_config['mapping']))
+          {
+	      $this->_config['mapping']=false;
+          } 
+      }
       $this->_index_name = $index_name;
     }
 
@@ -42,6 +51,12 @@ class SphinxSearch {
   function setMatchMode($mode)
   {
     $this->_connection->setMatchMode($mode);
+    return $this;
+  }
+
+  function setRankingMode($mode)
+  {
+    $this->_connection->setRankingMode($mode);
     return $this;
   }
 
@@ -92,14 +107,16 @@ class SphinxSearch {
     {
       // Get total count of existing results.
       $this->_total_count = (int) $result['total_found'];
+      // Get time taken for search.
+      $this->_time = $result['time'];
 
       if($result['total'] > 0 && isset($result['matches']))
       {
         // Get results' id's and query the database.
         $matchids = array_keys($result['matches']);
 
-        $config = $this->_config[$this->_index_name];
-        if ($config)
+        $config = isset($this->_config['mapping'])?$this->_config['mapping']:$this->_config[$this->_index_name];
+	if ($config)
         {
           if(isset($config['modelname']))
           {
@@ -138,6 +155,10 @@ class SphinxSearch {
   function getTotalCount()
   {
     return $this->_total_count;
+  }
+  function getTime()
+  {
+    return $this->_time;
   }
 
   function getErrorMessage()
