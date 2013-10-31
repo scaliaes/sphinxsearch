@@ -1,14 +1,14 @@
 <?php namespace Scalia\SphinxSearch;
 
 class SphinxSearch {
-  private $_connection;
-  private $_index_name;
-  private $_search_string;
-  private $_config;
-  private $_total_count;
-  private $_time;
+  protected $_connection;
+  protected $_index_name;
+  protected $_search_string;
+  protected $_config;
+  protected $_total_count;
+  protected $_time;
 
-  function __construct()
+  public function __construct()
   {
     $host = \Config::get('sphinxsearch::host');
     $port = \Config::get('sphinxsearch::port');
@@ -21,7 +21,7 @@ class SphinxSearch {
     $this->_index_name = isset($this->_config['name'])?implode(',', $this->_config['name']):key($this->_config);
   }
 
-  function search($string, $index_name = NULL)
+  public function search($string, $index_name = NULL)
   {
     $this->_search_string = $string;
     if (NULL !== $index_name)
@@ -42,37 +42,37 @@ class SphinxSearch {
     return $this;
   }
 
-  function setFieldWeights($weights)
+  public function setFieldWeights($weights)
   {
     $this->_connection->setFieldWeights($weights);
     return $this;
   }
 
-  function setMatchMode($mode)
+  public function setMatchMode($mode)
   {
     $this->_connection->setMatchMode($mode);
     return $this;
   }
 
-  function setRankingMode($mode)
+  public function setRankingMode($mode)
   {
     $this->_connection->setRankingMode($mode);
     return $this;
   }
 
-  function setSortMode($mode, $par = NULL)
+  public function setSortMode($mode, $par = NULL)
   {
     $this->_connection->setSortMode($mode, $par);
     return $this;
   }
 
-  function limit($limit, $offset = 0, $max_matches = 1000, $cutoff = 1000)
+  public function limit($limit, $offset = 0, $max_matches = 1000, $cutoff = 1000)
   {
     $this->_connection->setLimits($offset, $limit, $max_matches, $cutoff);
     return $this;
   }
 
-  function filter($attribute, $values, $exclude = FALSE)
+  public function filter($attribute, $values, $exclude = FALSE)
   {
     if (is_array($values))
     {
@@ -91,13 +91,13 @@ class SphinxSearch {
     return $this;
   }
 
-  function range($attribute, $min, $max, $exclude = FALSE)
+  public function range($attribute, $min, $max, $exclude = FALSE)
   {
     $this->_connection->setFilterRange($attribute, $min, $max, $exclude);
     return $this;
   }
 
-  function get($respect_sort_order = FALSE)
+  public function get($respect_sort_order = FALSE)
   {
     $this->_total_count = 0;
     $result             = $this->_connection->query($this->_search_string, $this->_index_name);
@@ -116,7 +116,7 @@ class SphinxSearch {
         $matchids = array_keys($result['matches']);
 
         $config = isset($this->_config['mapping'])?$this->_config['mapping']:$this->_config[$this->_index_name];
-	if ($config)
+        if ($config)
         {
           if(isset($config['modelname']))
           {
@@ -152,16 +152,17 @@ class SphinxSearch {
     return $result;    
   }
 
-  function getTotalCount()
+  public function getTotalCount()
   {
     return $this->_total_count;
   }
-  function getTime()
+
+  public function getTime()
   {
     return $this->_time;
   }
 
-  function getErrorMessage()
+  public function getErrorMessage()
   {
     return $this->_connection->getLastError();
   }
