@@ -82,6 +82,19 @@ Query with match and sort type specified.
 		->setSortMode(\Sphinx\SphinxClient::SPH_SORT_EXTENDED, "@weight DESC")
 		->get(true);  //passing true causes get() to respect returned sort order
 
+## Integration with Eloquent
+
+This package integrates well with Eloquent. You can change index configuration with `modelname` to get Eloquent's Collection (Illuminate\Database\Eloquent\Collection) as a result of `SphinxSearch::search`.
+
+	return array (
+		'host'    => '127.0.0.1',
+		'port'    => 9312,
+		'indexes' => array (
+			'my_index_name' => array ( 'table' => 'my_keywords_table', 'column' => 'id', 'modelname' => 'Keyword' ),
+		)
+	);
+
+
 ## Paging results in Laravel 4 (with caching)
 
 ```php
