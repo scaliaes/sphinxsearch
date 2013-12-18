@@ -30,25 +30,37 @@ To use Sphinx Search, you need to configure your indexes and what model it shoul
 
 	php artisan config:publish scalia/sphinxsearch
 
-This will create the file `app/config/packages/scalia/sphinxsearch/config.php`. Modify as needed the host and port, and configure the indexes, binding them to a table and id column.
+This will create the file `app/config/packages/scalia/sphinxsearch/config.php`. Modify as needed the host and port, and configure the searches, binding them to a table and id column.
 
-	return array (
-		'host'    => '127.0.0.1',
-		'port'    => 9312,
-		'indexes' => array (
-			'my_index_name' => array ( 'table' => 'my_keywords_table', 'column' => 'id' ),
-		)
-	);
+    return array (
+        'host'    => '127.0.0.1',
+        'port'    => 9312,
+        'default_search' => 'default',
+
+        'searches' => array (
+            'default' => array(
+                'indexes' => array('main','delta'),
+                'mapping' => array(
+                    'table'  => 'keyword',
+                    'column' => 'id'
+                )
+            ),
+        )
+    );
 
 Or disable the model querying to just get a list of result id's.
 
-	return array (
-		'host'    => '127.0.0.1',
-		'port'    => 9312,
-		'indexes' => array (
-			'my_index_name' => FALSE,
-		)
-	);
+    return array (
+        'host'    => '127.0.0.1',
+        'port'    => 9312,
+        'default_search' => 'default',
+
+        'searches' => array (
+            'default' => array(
+                'indexes' => array('main','delta')
+            ),
+        )
+    );
 
 
 ## Usage
@@ -59,9 +71,9 @@ Basic query
 	$results = SphinxSearch::search('my query')->get();
 
 
-Query another Sphinx index with limit and filters.
+Query another Sphinx search with limit and filters.
 
-	$results = SphinxSearch::search('my query', 'index_name')
+	$results = SphinxSearch::search('my query', 'search_name')
 		->limit(30)
 		->filter('attribute', array(1, 2))
 		->range('int_attribute', 1, 10)
@@ -70,7 +82,7 @@ Query another Sphinx index with limit and filters.
 
 Query with match and sort type specified.
 
-	$result = SphinxSearch::search('my query', 'index_name')
+	$result = SphinxSearch::search('my query', 'isearch_name')
 		->setFieldWeights(
 			array(
 				'partno'  => 10,
@@ -86,13 +98,21 @@ Query with match and sort type specified.
 
 This package integrates well with Eloquent. You can change index configuration with `modelname` to get Eloquent's Collection (Illuminate\Database\Eloquent\Collection) as a result of `SphinxSearch::search`.
 
-	return array (
-		'host'    => '127.0.0.1',
-		'port'    => 9312,
-		'indexes' => array (
-			'my_index_name' => array ( 'table' => 'my_keywords_table', 'column' => 'id', 'modelname' => 'Keyword' ),
-		)
-	);
+    return array (
+        'host'    => '127.0.0.1',
+        'port'    => 9312,
+        'default_search' => 'default',
+
+        'searches' => array (
+            'default' => array(
+                'indexes' => array('main','delta'),
+                'mapping' => array(
+                    'model'  => 'Keyword',
+                    'column' => 'id'
+                )
+            ),
+        )
+    );
 
 
 ## Paging results in Laravel 4 (with caching)
@@ -129,21 +149,21 @@ And, in your view after you finish displaying rows,
 It is a common strategy to utilize the main+delta scheme (www.sphinxconsultant.com/sphinx-search-delta-indexing/). When using deltas, it is often necessary to query on multiple indexes simultaneously. In order to achieve this using SphinxSearch, modify your config file to include the "name" and "mapping" keys like so:
 
 ```php
-<?php
 
-return array (
-	'host'    => '127.0.0.1',
-	'port'    => 9312,    
-	'indexes' => array (
-	    'name'    => array ('main', 'delta'),
-	    'mapping' => array ( 'table' => 'properties', 'column' => 'id' ),	    
-	)
-);
-```
+    return array (
+        'host'    => '127.0.0.1',
+        'port'    => 9312,
+        'default_search' => 'default',
 
-You can also pass in multiple indexes (separated by comma or space) to your search like so (if the "mapping" key is not specified in the config, search retrieves ids):
-
-```php
-SphinxSearch::search('lorem', 'main, delta')->get();
+        'searches' => array (
+            'default' => array(
+                'indexes' => array('main','delta'),
+                'mapping' => array(
+                    'model'  => 'Keyword',
+                    'column' => 'id'
+                )
+            ),
+        )
+    );
 ```
 
