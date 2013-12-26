@@ -66,6 +66,18 @@ class SphinxSearch {
     return $this;
   }
 
+  public function setFilterFloatRange($attribute, $min, $max, $exclude = false)
+  {
+    $this->_connection->setFilterFloatRange($attribute, $min, $max, $exclude);
+    return $this;
+  }
+
+  public function setGeoAnchor($attrlat, $attrlong, $lat = null, $long = null)
+  {
+    $this->_connection->setGeoAnchor($attrlat, $attrlong, $lat, $long);
+    return $this;
+  }
+
   public function limit($limit, $offset = 0, $max_matches = 1000, $cutoff = 1000)
   {
     $this->_connection->setLimits($offset, $limit, $max_matches, $cutoff);
