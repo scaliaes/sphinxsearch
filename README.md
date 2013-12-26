@@ -89,7 +89,7 @@ Query and sort with geo-distant searching.
     $latitude = deg2rad(25.99);
     $longitude = deg2rad(-80.35);
     $result = SphinxSearch::search('my_query', 'index_name')
-        ->setSortMode(\Sphinx\SphinxClient::SPH_SORT_EXTENDED, '@geodist ASC)
+        ->setSortMode(\Sphinx\SphinxClient::SPH_SORT_EXTENDED, '@geodist ASC')
         ->setFilterFloatRange('@geodist', 0.0, $radius)
         ->setGeoAnchor('lat', 'lng', $latitude, $longitude)
         ->get(true);
