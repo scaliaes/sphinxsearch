@@ -83,6 +83,8 @@ Query with match and sort type specified.
 		->get(true);  //passing true causes get() to respect returned sort order
 
 Query and sort with geo-distant searching.
+
+```
     $radius = 1000; //in meters
     $latitude = deg2rad(25.99);
     $longitude = deg2rad(-80.35);
@@ -91,7 +93,7 @@ Query and sort with geo-distant searching.
         ->setFilterFloatRange('@geodist', 0.0, $radius)
         ->setGeoAnchor('lat', 'lng', $latitude, $longitude)
         ->get(true);
-
+```
 ## Integration with Eloquent
 
 This package integrates well with Eloquent. You can change index configuration with `modelname` to get Eloquent's Collection (Illuminate\Database\Eloquent\Collection) as a result of `SphinxSearch::search`.
