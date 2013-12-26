@@ -82,6 +82,18 @@ Query with match and sort type specified.
 		->setSortMode(\Sphinx\SphinxClient::SPH_SORT_EXTENDED, "@weight DESC")
 		->get(true);  //passing true causes get() to respect returned sort order
 
+Query and sort with geo-distant searching.
+
+```
+    $radius = 1000; //in meters
+    $latitude = deg2rad(25.99);
+    $longitude = deg2rad(-80.35);
+    $result = SphinxSearch::search('my_query', 'index_name')
+        ->setSortMode(\Sphinx\SphinxClient::SPH_SORT_EXTENDED, '@geodist ASC')
+        ->setFilterFloatRange('@geodist', 0.0, $radius)
+        ->setGeoAnchor('lat', 'lng', $latitude, $longitude)
+        ->get(true);
+```
 ## Integration with Eloquent
 
 This package integrates well with Eloquent. You can change index configuration with `modelname` to get Eloquent's Collection (Illuminate\Database\Eloquent\Collection) as a result of `SphinxSearch::search`.
