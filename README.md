@@ -1,5 +1,6 @@
 # Sphinx Search
-[![Latest Unstable Version](https://poser.pugx.org/scalia/sphinxsearch/v/unstable.png)](https://packagist.org/packages/scalia/sphinxsearch) [![Latest Stable Version](https://poser.pugx.org/scalia/sphinxsearch/v/stable.png)](https://packagist.org/packages/scalia/sphinxsearch)
+[![Latest Unstable Version](https://poser.pugx.org/scalia/sphinxsearch/v/unstable.png)](https://packagist.org/packages/scalia/sphinxsearch)[![Total Downloads](https://poser.pugx.org/scalia/sphinxsearch/downloads.png)](https://packagist.org/packages/scalia/sphinxsearch)
+
 Sphinx Search is a package for Laravel 4 which queries Sphinxsearch and integrates with Eloquent.
 
 
