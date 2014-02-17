@@ -6,6 +6,7 @@ class SphinxSearch {
   protected $_search_string;
   protected $_config;
   protected $_total_count;
+  protected $_total_hits;
   protected $_time;
 
   public function __construct()
@@ -119,6 +120,8 @@ class SphinxSearch {
     {
       // Get total count of existing results.
       $this->_total_count = (int) $result['total_found'];
+      // Get total hits of existing results.
+      $this->_total_hits = (int) $result['words'][$this->_search_string]['hits'];
       // Get time taken for search.
       $this->_time = $result['time'];
 
@@ -162,6 +165,11 @@ class SphinxSearch {
     }
 
     return $result;    
+  }
+
+  public function getTotalHits()
+  {
+    return $this->_total_hits;
   }
 
   public function getTotalCount()
