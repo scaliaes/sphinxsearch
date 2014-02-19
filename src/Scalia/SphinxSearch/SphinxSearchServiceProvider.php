@@ -1,6 +1,7 @@
 <?php namespace Scalia\SphinxSearch;
 
 use Illuminate\Support\ServiceProvider;
+use Sphinx\SphinxClient;
 
 class SphinxSearchServiceProvider extends ServiceProvider {
 
@@ -28,9 +29,19 @@ class SphinxSearchServiceProvider extends ServiceProvider {
 	 */
 	public function register()
 	{
+        $this->app['sphinxconnection'] = $this->app->share(function($app)
+        {
+            $connection = new SphinxClient();
+            $connection->setServer($app['config']->get('sphinxsearch::host'),
+                $app['config']->get('sphinxsearch::port'));
+            $connection->setMatchMode(\Sphinx\SphinxClient::SPH_MATCH_ANY);
+            $connection->setSortMode(\Sphinx\SphinxClient::SPH_SORT_RELEVANCE);
+            return $connection;
+        });
+
 		$this->app['sphinxsearch'] = $this->app->share(function($app)
 		{
-			return new SphinxSearch;
+			return new SphinxSearch($app->make('sphinxconnection'));
 		});
 	}
 
