@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/scalia/sphinxsearch.png?label=ready&title=Ready)](https://waffle.io/scalia/sphinxsearch)
 # Sphinx Search
 [![Latest Unstable Version](https://poser.pugx.org/scalia/sphinxsearch/v/unstable.png)](https://packagist.org/packages/scalia/sphinxsearch)[![Total Downloads](https://poser.pugx.org/scalia/sphinxsearch/downloads.png)](https://packagist.org/packages/scalia/sphinxsearch)
 
