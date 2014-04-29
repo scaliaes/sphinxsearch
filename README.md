@@ -78,16 +78,16 @@ $results = SphinxSearch::search('my query', 'index_name')
 Query with match and sort type specified.
 ```php
 $result = SphinxSearch::search('my query', 'index_name')
-->setFieldWeights(
-	array(
-		'partno'  => 10,
-		'name'    => 8,
-		'details' => 1
+	->setFieldWeights(
+		array(
+			'partno'  => 10,
+			'name'    => 8,
+			'details' => 1
+		)
 	)
-)
-->setMatchMode(\Sphinx\SphinxClient::SPH_MATCH_EXTENDED)
-->setSortMode(\Sphinx\SphinxClient::SPH_SORT_EXTENDED, "@weight DESC")
-->get(true);  //passing true causes get() to respect returned sort order
+	->setMatchMode(\Sphinx\SphinxClient::SPH_MATCH_EXTENDED)
+	->setSortMode(\Sphinx\SphinxClient::SPH_SORT_EXTENDED, "@weight DESC")
+	->get(true);  //passing true causes get() to respect returned sort order
 ```
 Query and sort with geo-distant searching.
 ```php
@@ -95,10 +95,10 @@ $radius = 1000; //in meters
 $latitude = deg2rad(25.99);
 $longitude = deg2rad(-80.35);
 $result = SphinxSearch::search('my_query', 'index_name')
-->setSortMode(\Sphinx\SphinxClient::SPH_SORT_EXTENDED, '@geodist ASC')
-->setFilterFloatRange('@geodist', 0.0, $radius)
-->setGeoAnchor('lat', 'lng', $latitude, $longitude)
-->get(true);
+	->setSortMode(\Sphinx\SphinxClient::SPH_SORT_EXTENDED, '@geodist ASC')
+	->setFilterFloatRange('@geodist', 0.0, $radius)
+	->setGeoAnchor('lat', 'lng', $latitude, $longitude)
+	->get(true);
 ```
 ## Integration with Eloquent
 
