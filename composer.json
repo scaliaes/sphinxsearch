@@ -1,22 +1,28 @@
 {
-    "name": "scalia/sphinxsearch",
-    "description": "Laravel package to query Sphinxsearch",
-    "keywords": ["sphinx", "sphinxsearch", "laravel", "laravel 4"],
-    "homepage": "http://github.com/scalia/sphinxsearch",
-    "license": "Apache-2.0",
-    "authors": [
-        {
-            "name": "Scalia",
-            "email": "contacto@scalia.es"
-        }
-    ],
-    "require": {
-        "php": ">=5.3.0",
-        "illuminate/support": "~4.0",
-        "gigablah/sphinxphp": "2.0.8"},
-    "autoload": {
-        "psr-0": {
-            "Scalia\\SphinxSearch": "src/"
-        }
-    },
+  "name": "scalia/sphinxsearch",
+  "description": "Laravel package to query Sphinxsearch",
+  "keywords": [
+    "sphinx",
+    "sphinxsearch",
+    "laravel",
+    "laravel 4"
+  ],
+  "homepage": "http://github.com/scalia/sphinxsearch",
+  "license": "Apache-2.0",
+  "authors": [
+    {
+      "name": "Scalia",
+      "email": "contacto@scalia.es"
+    }
+  ],
+  "require": {
+    "php": ">=5.3.0",
+    "illuminate/support": "~4.0",
+    "gigablah/sphinxphp": "2.0.8"
+  },
+  "autoload": {
+    "psr-0": {
+      "Scalia\\SphinxSearch": "src/"
+    }
+  }
 }
