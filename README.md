@@ -1,6 +1,9 @@
 [![Stories in Ready](https://badge.waffle.io/scalia/sphinxsearch.png?label=ready&title=Ready)](https://waffle.io/scalia/sphinxsearch)
 # Sphinx Search
-[![Latest Unstable Version](https://poser.pugx.org/scalia/sphinxsearch/v/unstable.png)](https://packagist.org/packages/scalia/sphinxsearch)[![Total Downloads](https://poser.pugx.org/scalia/sphinxsearch/downloads.png)](https://packagist.org/packages/scalia/sphinxsearch)
+[![License](https://poser.pugx.org/scalia/sphinxsearch/license.png)](https://packagist.org/packages/scalia/sphinxsearch)
+[![Latest Stable Version](https://poser.pugx.org/scalia/sphinxsearch/v/stable.png)](https://packagist.org/packages/scalia/sphinxsearch)
+[![Total Downloads](https://poser.pugx.org/scalia/sphinxsearch/downloads.png)](https://packagist.org/packages/scalia/sphinxsearch)
+[![Monthly Downloads](https://poser.pugx.org/scalia/sphinxsearch/d/monthly.png)](https://packagist.org/packages/scalia/sphinxsearch)
 
 Sphinx Search is a package for Laravel 4 which queries Sphinxsearch and integrates with Eloquent.
 
@@ -14,100 +17,101 @@ Add `scalia/sphinxsearch` to `composer.json`.
 Run `composer update` to pull down the latest version of Sphinx Search.
 
 Now open up `app/config/app.php` and add the service provider to your `providers` array.
-
-    'providers' => array(
-        'Scalia\SphinxSearch\SphinxSearchServiceProvider',
-    )
-
+```php
+'providers' => array(
+	'Scalia\SphinxSearch\SphinxSearchServiceProvider',
+)
+```
 Now add the alias.
-
-    'aliases' => array(
-        'SphinxSearch' => 'Scalia\SphinxSearch\SphinxSearchFacade',
-    )
-
-
+```php
+'aliases' => array(
+	'SphinxSearch' => 'Scalia\SphinxSearch\SphinxSearchFacade',
+)
+```
 ## Configuration
 
 To use Sphinx Search, you need to configure your indexes and what model it should query. To do so, publish the configuration into your app.
 
-	php artisan config:publish scalia/sphinxsearch
+```php
+php artisan config:publish scalia/sphinxsearch
+```
 
 This will create the file `app/config/packages/scalia/sphinxsearch/config.php`. Modify as needed the host and port, and configure the indexes, binding them to a table and id column.
 
-	return array (
-		'host'    => '127.0.0.1',
-		'port'    => 9312,
-		'indexes' => array (
-			'my_index_name' => array ( 'table' => 'my_keywords_table', 'column' => 'id' ),
-		)
-	);
-
+```php
+return array (
+	'host'    => '127.0.0.1',
+	'port'    => 9312,
+	'indexes' => array (
+		'my_index_name' => array ( 'table' => 'my_keywords_table', 'column' => 'id' ),
+	)
+);
+```
 Or disable the model querying to just get a list of result id's.
-
-	return array (
-		'host'    => '127.0.0.1',
-		'port'    => 9312,
-		'indexes' => array (
-			'my_index_name' => FALSE,
-		)
-	);
-
+```php
+return array (
+	'host'    => '127.0.0.1',
+	'port'    => 9312,
+	'indexes' => array (
+		'my_index_name' => FALSE,
+	)
+);
+```
 
 ## Usage
 
 
 Basic query
-
-	$results = SphinxSearch::search('my query')->get();
-
+```php
+$results = SphinxSearch::search('my query')->get();
+```
 
 Query another Sphinx index with limit and filters.
-
-	$results = SphinxSearch::search('my query', 'index_name')
-		->limit(30)
-		->filter('attribute', array(1, 2))
-		->range('int_attribute', 1, 10)
-		->get();
-
+```php
+$results = SphinxSearch::search('my query', 'index_name')
+	->limit(30)
+	->filter('attribute', array(1, 2))
+	->range('int_attribute', 1, 10)
+	->get();
+```
 
 Query with match and sort type specified.
-
-	$result = SphinxSearch::search('my query', 'index_name')
-		->setFieldWeights(
-			array(
-				'partno'  => 10,
-				'name'    => 8,
-				'details' => 1
-			)
-		)
-		->setMatchMode(\Sphinx\SphinxClient::SPH_MATCH_EXTENDED)
-		->setSortMode(\Sphinx\SphinxClient::SPH_SORT_EXTENDED, "@weight DESC")
-		->get(true);  //passing true causes get() to respect returned sort order
-
-Query and sort with geo-distant searching.
-
+```php
+$result = SphinxSearch::search('my query', 'index_name')
+->setFieldWeights(
+	array(
+		'partno'  => 10,
+		'name'    => 8,
+		'details' => 1
+	)
+)
+->setMatchMode(\Sphinx\SphinxClient::SPH_MATCH_EXTENDED)
+->setSortMode(\Sphinx\SphinxClient::SPH_SORT_EXTENDED, "@weight DESC")
+->get(true);  //passing true causes get() to respect returned sort order
 ```
-    $radius = 1000; //in meters
-    $latitude = deg2rad(25.99);
-    $longitude = deg2rad(-80.35);
-    $result = SphinxSearch::search('my_query', 'index_name')
-        ->setSortMode(\Sphinx\SphinxClient::SPH_SORT_EXTENDED, '@geodist ASC')
-        ->setFilterFloatRange('@geodist', 0.0, $radius)
-        ->setGeoAnchor('lat', 'lng', $latitude, $longitude)
-        ->get(true);
+Query and sort with geo-distant searching.
+```php
+$radius = 1000; //in meters
+$latitude = deg2rad(25.99);
+$longitude = deg2rad(-80.35);
+$result = SphinxSearch::search('my_query', 'index_name')
+->setSortMode(\Sphinx\SphinxClient::SPH_SORT_EXTENDED, '@geodist ASC')
+->setFilterFloatRange('@geodist', 0.0, $radius)
+->setGeoAnchor('lat', 'lng', $latitude, $longitude)
+->get(true);
 ```
 ## Integration with Eloquent
 
 This package integrates well with Eloquent. You can change index configuration with `modelname` to get Eloquent's Collection (Illuminate\Database\Eloquent\Collection) as a result of `SphinxSearch::search`.
-
-	return array (
-		'host'    => '127.0.0.1',
-		'port'    => 9312,
-		'indexes' => array (
-			'my_index_name' => array ( 'table' => 'my_keywords_table', 'column' => 'id', 'modelname' => 'Keyword' ),
-		)
-	);
-
+```php
+return array (
+	'host'    => '127.0.0.1',
+	'port'    => 9312,
+	'indexes' => array (
+		'my_index_name' => array ( 'table' => 'my_keywords_table', 'column' => 'id', 'modelname' => 'Keyword' ),
+	)
+);
+```
 
 ## Paging results in Laravel 4 (with caching)
 
@@ -143,8 +147,6 @@ And, in your view after you finish displaying rows,
 It is a common strategy to utilize the main+delta scheme (www.sphinxconsultant.com/sphinx-search-delta-indexing/). When using deltas, it is often necessary to query on multiple indexes simultaneously. In order to achieve this using SphinxSearch, modify your config file to include the "name" and "mapping" keys like so:
 
 ```php
-<?php
-
 return array (
 	'host'    => '127.0.0.1',
 	'port'    => 9312,    
