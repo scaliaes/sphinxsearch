@@ -63,7 +63,7 @@ return array (
 
 Basic query (raw sphinx results)
 ```php
-$results = SphinxSearch::query('my query');
+$results = SphinxSearch::search('my query')->query();
 ```
 
 Basic query (with Eloquent)
