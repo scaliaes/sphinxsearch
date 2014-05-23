@@ -13,7 +13,7 @@ Sphinx Search is a package for Laravel 4 which queries Sphinxsearch and integrat
 Add `scalia/sphinxsearch` to `composer.json`.
 
     "scalia/sphinxsearch": "dev-master"
-    
+
 Run `composer update` to pull down the latest version of Sphinx Search.
 
 Now open up `app/config/app.php` and add the service provider to your `providers` array.
@@ -61,7 +61,12 @@ return array (
 ## Usage
 
 
-Basic query
+Basic query (raw sphinx results)
+```php
+$results = SphinxSearch::query('my query');
+```
+
+Basic query (with Eloquent)
 ```php
 $results = SphinxSearch::search('my query')->get();
 ```
@@ -119,18 +124,18 @@ return array (
 Route::get('/search', function ()
 {
     $page = Input::get('page', 1);
-    $search = Input::get('q', 'search string');    
+    $search = Input::get('q', 'search string');
     $perPage = 15;  //number of results per page
     // use a cache so you dont have to keep querying sphinx for every page!
     $results = Cache::remember(Str::slug($search), 10, function () use($search)
     {
         return SphinxSearch::search($search)
-        ->setMatchMode(\Sphinx\SphinxClient::SPH_MATCH_EXTENDED2)        
+        ->setMatchMode(\Sphinx\SphinxClient::SPH_MATCH_EXTENDED2)
         ->get();
     });
     if ($results) {
         $pages = array_chunk($results, $perPage);
-        
+
         $paginator = Paginator::make($pages[$page - 1], count($results), $perPage);
         return View::make('searchpage')->with('data', $paginator);
     }
@@ -149,10 +154,10 @@ It is a common strategy to utilize the main+delta scheme (www.sphinxconsultant.c
 ```php
 return array (
 	'host'    => '127.0.0.1',
-	'port'    => 9312,    
+	'port'    => 9312,
 	'indexes' => array (
 	    'name'    => array ('main', 'delta'),
-	    'mapping' => array ( 'table' => 'properties', 'column' => 'id' ),	    
+	    'mapping' => array ( 'table' => 'properties', 'column' => 'id' ),
 	)
 );
 ```

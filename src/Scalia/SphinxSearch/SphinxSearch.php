@@ -32,7 +32,7 @@ class SphinxSearch {
           if (!isset($this->_config['mapping']))
           {
 	      $this->_config['mapping']=false;
-          } 
+          }
       }
       $this->_index_name = $index_name;
     }
@@ -109,11 +109,16 @@ class SphinxSearch {
     return $this;
   }
 
+  public function query()
+  {
+    return $this->_connection->query($this->_search_string, $this->_index_name);
+  }
+
   public function get($respect_sort_order = FALSE)
   {
     $this->_total_count = 0;
     $result             = $this->_connection->query($this->_search_string, $this->_index_name);
-    
+
     // Process results.
     if ($result)
     {
@@ -132,13 +137,13 @@ class SphinxSearch {
         {
           if(isset($config['modelname']))
           {
-            $result = call_user_func_array($config['modelname'] . "::whereIn", array($config['column'], $matchids))->get();  
+            $result = call_user_func_array($config['modelname'] . "::whereIn", array($config['column'], $matchids))->get();
           }
           else
           {
             $result = \DB::table($config['table'])->whereIn($config['column'], $matchids)->get();
           }
-          
+
         }
       }
       else
@@ -157,11 +162,11 @@ class SphinxSearch {
           $key = self::getResultKeyByID($matchid, $result);
           $return_val[] = $result[$key];
         }
-        return $return_val;  
+        return $return_val;
       }
     }
 
-    return $result;    
+    return $result;
   }
 
   public function getTotalCount()
