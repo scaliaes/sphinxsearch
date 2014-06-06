@@ -155,7 +155,10 @@ class SphinxSearch {
         foreach($matchids as $matchid)
         {
           $key = self::getResultKeyByID($matchid, $result);
-          $return_val[] = $result[$key];
+          if($key !== false)
+          {
+            $return_val[] = $result[$key];
+          }
         }
         return $return_val;  
       }
