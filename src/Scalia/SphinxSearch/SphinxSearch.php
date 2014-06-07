@@ -60,9 +60,9 @@ class SphinxSearch {
     return $this;
   }
 
-  public function setSortMode($mode, $par = NULL)
+  public function setSortMode($mode, $sortby = '')
   {
-    $this->_connection->setSortMode($mode, $par);
+    $this->_connection->setSortMode($mode, $sortby);
     return $this;
   }
 
@@ -75,6 +75,12 @@ class SphinxSearch {
   public function setGeoAnchor($attrlat, $attrlong, $lat = null, $long = null)
   {
     $this->_connection->setGeoAnchor($attrlat, $attrlong, $lat, $long);
+    return $this;
+  }
+
+  public function setSelect($select)
+  {
+    $this->_connection->setSelect($select);
     return $this;
   }
 
