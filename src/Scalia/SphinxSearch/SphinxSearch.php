@@ -33,7 +33,7 @@ class SphinxSearch {
       {
           if (!isset($this->_config['mapping']))
           {
-	      $this->_config['mapping']=false;
+        $this->_config['mapping']=false;
           }
       }
       $this->_index_name = $index_name;
@@ -177,6 +177,8 @@ class SphinxSearch {
 
   public function with()
   {
+    $this->_eager_loads = array();
+
     foreach (func_get_args() as $a) {
       $this->_eager_loads[] = $a;
     }
