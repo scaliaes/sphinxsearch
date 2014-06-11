@@ -7,6 +7,7 @@ class SphinxSearch {
   protected $_config;
   protected $_total_count;
   protected $_time;
+  protected $_eager_loads;
 
   public function __construct()
   {
@@ -19,6 +20,7 @@ class SphinxSearch {
     $this->_config = \Config::get('sphinxsearch::indexes');
     reset($this->_config);
     $this->_index_name = isset($this->_config['name'])?implode(',', $this->_config['name']):key($this->_config);
+    $this->_eager_loads = array();
   }
 
   public function search($string, $index_name = NULL)
@@ -31,7 +33,7 @@ class SphinxSearch {
       {
           if (!isset($this->_config['mapping']))
           {
-	      $this->_config['mapping']=false;
+        $this->_config['mapping']=false;
           }
       }
       $this->_index_name = $index_name;
@@ -133,7 +135,7 @@ class SphinxSearch {
       // Get time taken for search.
       $this->_time = $result['time'];
 
-      if($result['total'] > 0 && isset($result['matches']))
+      if($result['total'] && isset($result['matches']))
       {
         // Get results' id's and query the database.
         $matchids = array_keys($result['matches']);
@@ -143,7 +145,11 @@ class SphinxSearch {
         {
           if(isset($config['modelname']))
           {
-            $result = call_user_func_array($config['modelname'] . "::whereIn", array($config['column'], $matchids))->get();
+            if ($this->_eager_loads) {
+              $result = call_user_func_array($config['modelname'] . "::whereIn", array($config['column'], $matchids))->with($this->_eager_loads)->get();
+            } else {
+              $result = call_user_func_array($config['modelname'] . "::whereIn", array($config['column'], $matchids))->get();
+            }
           }
           else
           {
@@ -173,6 +179,17 @@ class SphinxSearch {
     }
 
     return $result;
+  }
+
+  public function with()
+  {
+    $this->_eager_loads = array();
+
+    foreach (func_get_args() as $a) {
+      $this->_eager_loads[] = $a;
+    }
+
+    return $this;
   }
 
   public function getTotalCount()
