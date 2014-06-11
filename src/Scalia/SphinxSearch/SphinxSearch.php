@@ -138,10 +138,6 @@ class SphinxSearch
                     } else {
                         $result = \DB::table($config['table'])->whereIn($config['column'], $matchids)->get();
                     }
-
-                    // important: reset the array of eager loads prior to making next call
-                    $this->_eager_loads = array();
-
                 }
             } else {
                 $result = array();
@@ -159,6 +155,9 @@ class SphinxSearch
                 return $return_val;
             }
         }
+
+        // important: reset the array of eager loads prior to making next call
+        $this->_eager_loads = array();
 
         return $result;
     }
