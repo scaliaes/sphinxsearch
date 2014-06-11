@@ -127,7 +127,7 @@ class SphinxSearch
                 // Get results' id's and query the database.
                 $matchids = array_keys($result['matches']);
 
-                $config = isset($this->_config['mapping'])?$this->_config['mapping']:$this->_config[$this->_index_name];
+                $config = isset($this->_config['mapping']) ? $this->_config['mapping'] : $this->_config[$this->_index_name];
                 if ($config) {
                     if (isset($config['modelname'])) {
                         if ($this->_eager_loads) {
@@ -148,8 +148,9 @@ class SphinxSearch
         if ($respect_sort_order) {
             if (isset($matchids)) {
                 $return_val = array();
+
                 foreach ($matchids as $matchid) {
-                    $key = self::getResultKeyByID($matchid, $result);
+                    $key          = self::getResultKeyByID($matchid, $result);
                     $return_val[] = $result[$key];
                 }
                 return $return_val;
@@ -189,7 +190,6 @@ class SphinxSearch
     {
         if (count($result)) {
             foreach ($result as $k => $result_item) {
-
                 if ($result_item->id == $id) {
                     return $k;
                 }
