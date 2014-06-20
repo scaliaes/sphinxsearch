@@ -171,8 +171,11 @@ class SphinxSearch {
         $return_val = array();
         foreach($matchids as $matchid)
         {
-          $key          = self::getResultKeyByID($matchid, $result);
-          $return_val[] = $result[$key];
+          $key = self::getResultKeyByID($matchid, $result);
+          if (false !== $key)
+          {
+            $return_val[] = $result[$key];
+          }
         }
         return $return_val;
       }
@@ -188,7 +191,8 @@ class SphinxSearch {
   {
     $this->_eager_loads = array();
 
-    foreach (func_get_args() as $a) {
+    foreach (func_get_args() as $a)
+    {
       $this->_eager_loads[] = $a;
     }
 
