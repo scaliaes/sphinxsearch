@@ -23,18 +23,18 @@ class SphinxSearch {
     $this->_eager_loads = array();
   }
 
-  public function search($string, $index_name = NULL)
+  public function search($string, $index_name = null)
   {
     $this->_search_string = $string;
-    if (NULL !== $index_name)
+    if (null !== $index_name)
     {
-       //if index name contains , or ' ', multiple index search
-      if (strpos($index_name, ' ')||strpos($index_name,','))
+      // if index name contains , or ' ', multiple index search
+      if (strpos($index_name, ' ') || strpos($index_name,','))
       {
-          if (!isset($this->_config['mapping']))
-          {
-        $this->_config['mapping']=false;
-          }
+        if (!isset($this->_config['mapping']))
+        {
+          $this->_config['mapping']=false;
+        }
       }
       $this->_index_name = $index_name;
     }
@@ -62,7 +62,7 @@ class SphinxSearch {
     return $this;
   }
 
-  public function setSortMode($mode, $sortby = '')
+  public function setSortMode($mode, $sortby = null)
   {
     $this->_connection->setSortMode($mode, $sortby);
     return $this;
@@ -92,7 +92,7 @@ class SphinxSearch {
     return $this;
   }
 
-  public function filter($attribute, $values, $exclude = FALSE)
+  public function filter($attribute, $values, $exclude = false)
   {
     if (is_array($values))
     {
@@ -122,7 +122,7 @@ class SphinxSearch {
     return $this->_connection->query($this->_search_string, $this->_index_name);
   }
 
-  public function get($respect_sort_order = FALSE)
+  public function get($respect_sort_order = false)
   {
     $this->_total_count = 0;
     $result             = $this->_connection->query($this->_search_string, $this->_index_name);
@@ -140,10 +140,10 @@ class SphinxSearch {
         // Get results' id's and query the database.
         $matchids = array_keys($result['matches']);
 
-        $config = isset($this->_config['mapping'])?$this->_config['mapping']:$this->_config[$this->_index_name];
+        $config = isset($this->_config['mapping']) ? $this->_config['mapping'] : $this->_config[$this->_index_name];
         if ($config)
         {
-          if(isset($config['modelname']))
+          if (isset($config['modelname']))
           {
             if ($this->_eager_loads) {
               $result = call_user_func_array($config['modelname'] . "::whereIn", array($config['column'], $matchids))->with($this->_eager_loads)->get();
@@ -171,12 +171,15 @@ class SphinxSearch {
         $return_val = array();
         foreach($matchids as $matchid)
         {
-          $key = self::getResultKeyByID($matchid, $result);
+          $key          = self::getResultKeyByID($matchid, $result);
           $return_val[] = $result[$key];
         }
         return $return_val;
       }
     }
+
+    // important: reset the array of eager loads prior to making next call
+    $this->_eager_loads = array();
 
     return $result;
   }

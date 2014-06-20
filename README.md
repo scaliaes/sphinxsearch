@@ -118,6 +118,12 @@ return array (
 );
 ```
 
+Eager loading with Eloquent is the same an one would expect:
+```php
+$results = SphinxSearch::search('monkeys')->with('arms', 'legs', 'otherLimbs')->get();
+```
+More on eager loading: http://laravel.com/docs/eloquent#eager-loading
+
 ## Paging results in Laravel 4 (with caching)
 
 ```php
