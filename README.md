@@ -174,3 +174,18 @@ You can also pass in multiple indexes (separated by comma or space) to your sear
 SphinxSearch::search('lorem', 'main, delta')->get();
 ```
 
+
+## Retrieve search result excerpts using Sphinx
+
+It is nifty to display excerpts with keywords highlighted in search result. Sphinx supports this feature natively. http://sphinxsearch.com/docs/archives/2.0.3/api-func-buildexcerpts.html
+
+```php
+$search = SphinxSearch::search($term, 'articles');
+$articles = $search->get();
+$excerpt = $search->excerpt(current($articles)->content);
+
+or
+
+$search = SphinxSearch::search($term, 'articles');
+dd($search->excerpts(array_pluck($articles, 'content')));
+```

@@ -122,6 +122,14 @@ class SphinxSearch {
     return $this->_connection->query($this->_search_string, $this->_index_name);
   }
 
+  public function excerpt($content, $opts = array()) {
+    return $this->_connection->buildExcerpts(array($content), $this->_index_name, $this->_search_string, $opts);
+  }
+
+  public function excerpts($contents, $opts = array()) {
+    return $this->_connection->buildExcerpts($contents, $this->_index_name, $this->_search_string, $opts);
+  }
+
   public function get($respect_sort_order = false)
   {
     $this->_total_count = 0;
