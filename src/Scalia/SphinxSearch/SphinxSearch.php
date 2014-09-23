@@ -40,6 +40,7 @@ class SphinxSearch {
     }
 
     $this->_connection->resetFilters();
+    $this->_connection->resetGroupBy();
 
     return $this;
   }
@@ -77,6 +78,12 @@ class SphinxSearch {
   public function setGeoAnchor($attrlat, $attrlong, $lat = null, $long = null)
   {
     $this->_connection->setGeoAnchor($attrlat, $attrlong, $lat, $long);
+    return $this;
+  }
+
+  public function setGroupBy($attribute, $func, $groupsort = '@group desc')
+  {
+    $this->_connection->setGroupBy($attribute, $func, $groupsort);
     return $this;
   }
 
