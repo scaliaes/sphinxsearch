@@ -139,6 +139,7 @@ class SphinxSearch {
       {
         // Get results' id's and query the database.
         $matchids = array_keys($result['matches']);
+        $idString =  implode(',', $matchids);
 
         $config = isset($this->_config['mapping']) ? $this->_config['mapping'] : $this->_config[$this->_index_name];
         if ($config)
@@ -146,14 +147,14 @@ class SphinxSearch {
           if (isset($config['modelname']))
           {
             if ($this->_eager_loads) {
-              $result = call_user_func_array($config['modelname'] . "::whereIn", array($config['column'], $matchids))->with($this->_eager_loads)->get();
+              $result = call_user_func_array($config['modelname'] . "::whereIn", array($config['column'], $matchids))->orderByRaw(\DB::raw("FIELD(id, $idString)"))->with($this->_eager_loads)->get();
             } else {
-              $result = call_user_func_array($config['modelname'] . "::whereIn", array($config['column'], $matchids))->get();
+              $result = call_user_func_array($config['modelname'] . "::whereIn", array($config['column'], $matchids))->orderByRaw(\DB::raw("FIELD(id, $idString)"))->get();
             }
           }
           else
           {
-            $result = \DB::table($config['table'])->whereIn($config['column'], $matchids)->get();
+            $result = \DB::table($config['table'])->whereIn($config['column'], $matchids)->orderByRaw(\DB::raw("FIELD(id, $idString)"))->get();
           }
 
         }
