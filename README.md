@@ -8,7 +8,7 @@
 Sphinx Search is a package for Laravel 4 which queries Sphinxsearch and integrates with Eloquent.
 
 
-## Installation info
+## Installation
 
 Add `scalia/sphinxsearch` to `composer.json`.
 
