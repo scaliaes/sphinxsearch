@@ -13,8 +13,10 @@ class SphinxSearch {
   {
     $host = \Config::get('sphinxsearch::host');
     $port = \Config::get('sphinxsearch::port');
+    $timeout = \Config::get('sphinxsearch::timeout');
     $this->_connection = new \Sphinx\SphinxClient();
     $this->_connection->setServer($host, $port);
+    $this->_connection->setConnectTimeout($timeout);
     $this->_connection->setMatchMode(\Sphinx\SphinxClient::SPH_MATCH_ANY);
     $this->_connection->setSortMode(\Sphinx\SphinxClient::SPH_SORT_RELEVANCE);
     $this->_config = \Config::get('sphinxsearch::indexes');
