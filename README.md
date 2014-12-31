@@ -148,6 +148,34 @@ Route::get('/search', function ()
     return View::make('notfound');
 });
 ```
+## Paging results in Laravel 4 (without caching)
+
+```php
+Route::get('/search', function ()
+{
+    $page = Input::get('page', 1);
+    $search = Input::get('q', 'search string');
+    $perPage = 15;  //number of results per page
+    $items = null;
+
+    $results = SphinxSearch::search($search)
+        ->setMatchMode(\Sphinx\SphinxClient::SPH_MATCH_EXTENDED2)
+        ->limit($perPage, ($page-1)* $perPage)
+        ->get();
+
+    if (!empty($results['total'])) {
+        $items = Item::whereIn('id', array_keys($results['matches']))->get();
+        $items = Paginator::make($items->all(), $results['total'], $perPage);
+
+        $items->appends(['search' => $search]); //add search query string
+    }
+
+    if($error = SphinxSearch::getErrorMessage())
+    {
+        // 
+    }
+});
+```
 And, in your view after you finish displaying rows,
 ```php
 <?php echo $data->links()?>
