@@ -140,9 +140,10 @@ Route::get('/search', function ()
         ->get();
     });
     if ($results) {
-        $pages = array_chunk($results, $perPage);
+    	$totalItems = $results->count();
+        $pages = array_chunk($results->all(), $perPage);
 
-        $paginator = Paginator::make($pages[$page - 1], count($results), $perPage);
+        $paginator = Paginator::make($pages[$page - 1], $totalItems, $perPage);
         return View::make('searchpage')->with('data', $paginator);
     }
     return View::make('notfound');
