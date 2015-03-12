@@ -199,11 +199,19 @@ class SphinxSearch {
 
   public function with()
   {
-    $this->_eager_loads = array();
+    // Allow multiple with-calls
+    if (false === isset($this->_eager_loads)) {
+      $this->_eager_loads = array();
+    }
 
     foreach (func_get_args() as $a)
     {
-      $this->_eager_loads[] = $a;
+      // Add closures as name=>function()
+      if (is_array($a)) {
+        $this->_eager_loads = array_merge($this->_eager_loads, $a);
+      } else {
+        $this->_eager_loads[] = $a;
+      }
     }
 
     return $this;
