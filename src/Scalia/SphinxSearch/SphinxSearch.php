@@ -1,5 +1,7 @@
 <?php namespace Scalia\SphinxSearch;
 
+use \Sphinx\SphinxClient;
+
 class SphinxSearch {
   protected $_connection;
   protected $_index_name;
@@ -9,12 +11,12 @@ class SphinxSearch {
   protected $_time;
   protected $_eager_loads;
 
-  public function __construct()
+  public function __construct(SphinxClient $sphinxClient)
   {
     $host = \Config::get('sphinxsearch::host');
     $port = \Config::get('sphinxsearch::port');
     $timeout = \Config::get('sphinxsearch::timeout');
-    $this->_connection = new \Sphinx\SphinxClient();
+    $this->_connection = $sphinxClient;
     $this->_connection->setServer($host, $port);
     $this->_connection->setConnectTimeout($timeout);
     $this->_connection->setMatchMode(\Sphinx\SphinxClient::SPH_MATCH_ANY);
