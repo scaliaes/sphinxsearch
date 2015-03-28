@@ -1,9 +1,13 @@
-[![Stories in Ready](https://badge.waffle.io/scalia/sphinxsearch.png?label=ready&title=Ready)](https://waffle.io/scalia/sphinxsearch)
 # Sphinx Search
-[![License](https://poser.pugx.org/scalia/sphinxsearch/license.png)](https://packagist.org/packages/scalia/sphinxsearch)
-[![Latest Stable Version](https://poser.pugx.org/scalia/sphinxsearch/v/stable.png)](https://packagist.org/packages/scalia/sphinxsearch)
-[![Total Downloads](https://poser.pugx.org/scalia/sphinxsearch/downloads.png)](https://packagist.org/packages/scalia/sphinxsearch)
-[![Monthly Downloads](https://poser.pugx.org/scalia/sphinxsearch/d/monthly.png)](https://packagist.org/packages/scalia/sphinxsearch)
+
+[![Build Status](http://img.shields.io/travis/scalia/sphinxsearch.svg?style=flat)](https://travis-ci.org/scalia/sphinxsearch)
+[![License](http://img.shields.io/packagist/l/scalia/sphinxsearch.svg?style=flat)](https://packagist.org/packages/scalia/sphinxsearch)
+[![Latest Stable Version](http://img.shields.io/packagist/v/scalia/sphinxsearch.svg?style=flat)](https://packagist.org/packages/scalia/sphinxsearch)
+[![Total Downloads](http://img.shields.io/packagist/dt/scalia/sphinxsearch.svg?style=flat)](https://packagist.org/packages/scalia/sphinxsearch)
+[![Monthly Downloads](http://img.shields.io/packagist/dm/scalia/sphinxsearch.svg?style=flat)](https://packagist.org/packages/scalia/sphinxsearch)
+[![Stories in Ready](https://badge.waffle.io/scalia/sphinxsearch.png?label=ready&title=Ready)](https://waffle.io/scalia/sphinxsearch)
+[![Stars](https://img.shields.io/github/stars/scalia/sphinxsearch.svg)](https://github.com/scalia/sphinxsearch/stargazers)
+[![Forks](https://img.shields.io/github/forks/scalia/sphinxsearch.svg)](https://github.com/scalia/sphinxsearch/network)
 
 Sphinx Search is a package for Laravel 4 which queries Sphinxsearch and integrates with Eloquent.
 
