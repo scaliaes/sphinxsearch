@@ -133,24 +133,28 @@ More on eager loading: http://laravel.com/docs/eloquent#eager-loading
 ```php
 Route::get('/search', function ()
 {
-    $page = Input::get('page', 1);
-    $search = Input::get('q', 'search string');
-    $perPage = 15;  //number of results per page
-    // use a cache so you dont have to keep querying sphinx for every page!
+    $search = Input::get('q', '');
+
     $results = Cache::remember(Str::slug($search), 10, function () use($search)
     {
         return SphinxSearch::search($search)
         ->setMatchMode(\Sphinx\SphinxClient::SPH_MATCH_EXTENDED2)
-        ->get();
+        ->query();
     });
-    if ($results) {
-    	$totalItems = $results->count();
-        $pages = array_chunk($results->all(), $perPage);
 
-        $paginator = Paginator::make($pages[$page - 1], $totalItems, $perPage);
-        return View::make('searchpage')->with('data', $paginator);
+    $items = array();
+
+    if (!empty($results['total']))
+    {
+    	$items = Item::whereIn('id',$results)->paginate(15);
     }
-    return View::make('notfound');
+
+    if($error = SphinxSearch::getErrorMessage())
+    {
+        // 
+    }
+
+    return View::make('searchpage')->with('data', $items);
 });
 ```
 ## Paging results in Laravel 4 (without caching)
@@ -158,32 +162,30 @@ Route::get('/search', function ()
 ```php
 Route::get('/search', function ()
 {
-    $page = Input::get('page', 1);
-    $search = Input::get('q', 'search string');
-    $perPage = 15;  //number of results per page
-    $items = null;
+	$search = Input::get('q', '');
 
     $results = SphinxSearch::search($search)
         ->setMatchMode(\Sphinx\SphinxClient::SPH_MATCH_EXTENDED2)
-        ->limit($perPage, ($page-1)* $perPage)
-        ->get();
+        ->query();
 
-    if (!empty($results['total'])) {
-        $items = Item::whereIn('id', array_keys($results['matches']))->get();
-        $items = Paginator::make($items->all(), $results['total'], $perPage);
+    $items = array();
 
-        $items->appends(['search' => $search]); //add search query string
+    if (!empty($results['total']))
+    {
+        $items = Item::whereIn('id',$results)->paginate(15);
     }
 
     if($error = SphinxSearch::getErrorMessage())
     {
         // 
     }
+
+    return View::make('searchpage')->with('data', $items);
 });
 ```
 And, in your view after you finish displaying rows,
 ```php
-<?php echo $data->links()?>
+<?php echo $data->appends(['q' => Input::get('q','')])->links()?>
 ```
 
 ## Searching through multiple Sphinx indexes (main/delta)
