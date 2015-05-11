@@ -11,7 +11,7 @@ class SphinxSearch {
 
   public function __construct()
   {
-    $host = \Config('sphinxsearch.host');
+    $host = \Config::get('sphinxsearch.host');
     $port = \Config::get('sphinxsearch.port');
     $this->_connection = new \Sphinx\SphinxClient();
     $this->_connection->setServer($host, $port);
