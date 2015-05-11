@@ -18,7 +18,10 @@ class SphinxSearchServiceProvider extends ServiceProvider {
 	 */
 	public function boot()
 	{
-		$this->package('scalia/sphinxsearch');
+		//$this->package('scalia/sphinxsearch');
+		$this->publishes([
+			__DIR__.'/../../config/config.php' => config_path('sphinxsearch.php'),
+		], 'config');
 	}
 
 	/**
