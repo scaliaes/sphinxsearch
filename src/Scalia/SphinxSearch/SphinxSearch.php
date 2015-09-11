@@ -173,7 +173,21 @@ class SphinxSearch {
           {
             $result = \DB::table($config['table'])->whereIn($config['column'], $matchids)->orderByRaw(\DB::raw("FIELD(id, $idString)"))->get();
           }
-
+          if($result) {
+            $mode = \Config::get('database.fetch');
+            $key4result = array();
+            if($mode == \PDO::FETCH_ASSOC) {
+              foreach($result as $result_item) {
+                $key4result[$result_item[$config['column']]] = $result_item;
+              }
+            } else {
+              foreach($result as $result_item) {
+                $key4result[$result_item->$config['column']] = $result_item;
+              }
+            }
+            $result = $key4result;
+            unset($key4result);
+          }
         }
       }
       else
@@ -189,11 +203,7 @@ class SphinxSearch {
         $return_val = array();
         foreach($matchids as $matchid)
         {
-          $key = self::getResultKeyByID($matchid, $result);
-          if (false !== $key)
-          {
-            $return_val[] = $result[$key];
-          }
+          $return_val[$matchid] = $result[$matchid];
         }
         return $return_val;
       }
@@ -240,6 +250,9 @@ class SphinxSearch {
     return $this->_connection->getLastError();
   }
 
+  /**
+   * @deprecated
+   */
   private function getResultKeyByID($id, $result)
   {
     if(count($result) > 0)
