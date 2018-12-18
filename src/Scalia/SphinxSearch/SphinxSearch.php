@@ -59,9 +59,9 @@ class SphinxSearch {
     return $this;
   }
 
-  public function setRankingMode($mode)
+  public function setRankingMode($mode, $expr = '')
   {
-    $this->_connection->setRankingMode($mode);
+    $this->_connection->setRankingMode($mode, $expr);
     return $this;
   }
 
@@ -223,6 +223,16 @@ class SphinxSearch {
     }
 
     return $this;
+  }
+
+  public function setIndexWeights(array $weights)
+  {
+    $this->_connection->setIndexWeights($weights);
+  }
+
+  public function getSphinxClientInstance()
+  {
+    return $this->_connection;
   }
 
   public function getTotalCount()
